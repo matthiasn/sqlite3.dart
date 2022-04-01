@@ -14,7 +14,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(sqlite3)
 
 add_library(${PLUGIN_NAME} SHARED
-  "sqlite3_flutter_libs_plugin.cc"
+  "sqlite3_flutter_libs_plugin.cpp"
   "${sqlite3_SOURCE_DIR}/sqlite3.c"
 )
 
