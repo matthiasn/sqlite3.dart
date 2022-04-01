@@ -78,6 +78,14 @@ DynamicLibrary _defaultOpen() {
     }
     return result;
   } else if (Platform.isWindows) {
+    // In recent versions of `sqlite3_flutter_libs`, sqlite3 is included with
+    // the application.
+    final executable = DynamicLibrary.executable();
+    if (executable
+        .providesSymbol('Sqlite3FlutterLibsPluginRegisterWithRegistrar')) {
+      return executable; // sqlite is linked into the application
+    }
+
     return DynamicLibrary.open('sqlite3.dll');
   }
 
