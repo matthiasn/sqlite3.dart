@@ -65,7 +65,7 @@ target_compile_definitions(sqlite3 PRIVATE
 add_dependencies(${PLUGIN_NAME} sqlite3)
 
 # List of absolute paths to libraries that should be bundled with the plugin
-set(sqlite3_flutter_libs_bundled_libraries
+set(sqlcipher_flutter_libs_bundled_libraries
   "$<TARGET_FILE:sqlite3>"
   PARENT_SCOPE
 )
