@@ -22,30 +22,13 @@ target_include_directories(${PLUGIN_NAME} INTERFACE
   "${CMAKE_CURRENT_SOURCE_DIR}/include")
 target_link_libraries(${PLUGIN_NAME} PRIVATE flutter flutter_wrapper_plugin)
 
-include(FetchContent)
-FetchContent_Declare(
-  sqlite3
-  URL https://sqlite.org/2022/sqlite-autoconf-3380200.tar.gz
-)
-FetchContent_MakeAvailable(sqlite3)
+# Using a prebuilt sqlcipher amalgation because building it requires TCL/TK which no one has.
+file(DOWNLOAD "https://storage.googleapis.com/simon-public-euw3/assets/sqlcipher/v4_5_1.c" "${CMAKE_CURRENT_BINARY_DIR}/sqlcipher.c" EXPECTED_HASH SHA512=69ed34101657eda56b8903abc6b1abee577ab0f04d11a91c45bfcf439ab30372cccf62d709b8e4d6c3e2fb219fe30170791a1be5e679bac5a8242840e3469060)
 
 add_library(sqlite3 SHARED "sqlite3_flutter.c")
-add_custom_command(
-  OUTPUT "${sqlcipher_SOURCE_DIR}/Makefile"
-  COMMAND ./configure
-  WORKING_DIRECTORY "${sqlcipher_SOURCE_DIR}"
-)
-
-add_custom_command(
-  OUTPUT "${sqlcipher_SOURCE_DIR}/sqlite3.c"
-  OUTPUT "${sqlcipher_SOURCE_DIR}/sqlite3.h"
-  DEPENDS "${sqlcipher_SOURCE_DIR}/Makefile"
-  COMMAND make sqlite3.c sqlite3.h
-  WORKING_DIRECTORY "${sqlcipher_SOURCE_DIR}"
-)
-
-target_include_directories(sqlite3 PRIVATE "${sqlcipher_SOURCE_DIR}")
+target_include_directories(sqlite3 PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
 target_compile_options(${PLUGIN_NAME} PRIVATE "$<$<NOT:$<CONFIG:Debug>>:-O3>")
+set_property(SOURCE "sqlite3_flutter.c" APPEND PROPERTY OBJECT_DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/sqlcipher.c")
 target_link_libraries(sqlite3 PRIVATE OpenSSL::Crypto)
 
 # Note: Keep in sync with https://github.com/simolus3/sqlite-native-libraries/blob/master/sqlite3-native-library/cpp/CMakeLists.txt
