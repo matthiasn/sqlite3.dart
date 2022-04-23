@@ -22,6 +22,10 @@ target_include_directories(${PLUGIN_NAME} INTERFACE
   "${CMAKE_CURRENT_SOURCE_DIR}/include")
 target_link_libraries(${PLUGIN_NAME} PRIVATE flutter flutter_wrapper_plugin)
 
+
+set(OPENSSL_USE_STATIC_LIBS TRUE)
+find_package(OpenSSL REQUIRED)
+
 # Using a prebuilt sqlcipher amalgation because building it requires TCL/TK which no one has.
 file(DOWNLOAD "https://storage.googleapis.com/simon-public-euw3/assets/sqlcipher/v4_5_1.c" "${CMAKE_CURRENT_BINARY_DIR}/sqlcipher.c" EXPECTED_HASH SHA512=69ed34101657eda56b8903abc6b1abee577ab0f04d11a91c45bfcf439ab30372cccf62d709b8e4d6c3e2fb219fe30170791a1be5e679bac5a8242840e3469060)
 
